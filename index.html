@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=false" />
-    <title>pocket portals fhnw</title>
+    <title>Sonny</title>
     <script src="./lib/hydra-synth.js"></script>
     <styLe>
         html,
@@ -25,7 +25,24 @@
     <script type="module">
         const h = new Hydra()
 
-        osc(10, 0.1, 0.2).out()
+        s0.initCam()
+
+src(o0)
+.scale(1.005, 1, 0.99)
+.scrollY(-0.001)
+// .brightness(-0.002)
+// .contrast(0.9)
+.modulate(src(s0).hue(() => time*0.1), 0.002)
+.layer(src(s0)
+//   		.gradient(0.02)
+// 		.colorama(4)
+    .mask(shape(14, 0.2, 0)
+      )
+.scrollX(() => -deviceOrientation.gamma/3000)
+ .scrollY(() => -deviceOrientation.beta/3000)
+      )
+.out(o0)
+
     </script>
 </body>
 
