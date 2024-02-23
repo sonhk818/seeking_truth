@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=false" />
     <title>Sonny</title>
     <script src="./lib/hydra-synth.js"></script>
+    <script src="./lib/gyro-v2.js"></script>
     <styLe>
         html,
         body {
@@ -18,6 +19,16 @@
         canvas {
             display: block;
         }
+    #gyro-button {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: none;
+      cursor: pointer;
+      background-size: cover;
+      background-position: center;
+      background-image: url("cover.png");
+    }
     </styLe>
 </head>
 
@@ -25,25 +36,81 @@
     <script type="module">
         const h = new Hydra()
 
-        s0.initCam()
 
-src(o0)
-.scale(1.005, 1, 0.99)
-.scrollY(-0.001)
-// .brightness(-0.002)
-// .contrast(0.9)
-.modulate(src(s0).hue(() => time*0.1), 0.002)
-.layer(src(s0)
-//   		.gradient(0.02)
-// 		.colorama(4)
-    .mask(shape(14, 0.2, 0)
-      )
-.scrollX(() => -deviceOrientation.gamma/3000)
- .scrollY(() => -deviceOrientation.beta/3000)
-      )
-.out(o0)
+        const sketch1 = () => {
+                osc(5, 0.9, 0.001)
+                    .kaleid([3,4,5,7,8,9,10].fast(0.4))
+                    .color(()=>gyro.beta, ()=>a.fft[0]*2)
+                    .colorama(0.2)
+                    .rotate(0.009,()=>Math.sin(time)* -0.0001)
+                    .modulateRotate(o0,()=>Math.sin(time) * 0.003)
+                    .modulate(o0, 0.9)
+                    // .mask(shape(4, 0.1, 0).repeat(100, 10))
+                    .scale(0.5)
+                    .out()
+                    a.show()
+                    a.setSmooth(0.1)
+                    render(o0)      
 
+                    }
+
+        const sketch2 = () => {
+            s0.initCam()
+                src(o0)
+                    .scale(1.005, 1, 0.99)
+                    .scrollY(-0.001)
+                    .modulate(src(s0).hue(() => gyro.alpha/2), 0.002)
+                    .layer(src(s0)
+                        .mask(shape(10, 0.4, 0.001))
+                        .scrollX(() => gyro.gamma/2)
+                        .scrollY(() => gyro.beta)
+                        )
+                    .out(o0)
+                        }
+
+        const sketch3 = () => {
+             s0.initCam()
+
+                src(s0).out(o0)
+
+                osc(5, 0.9, 0.001)
+                    .kaleid([3,4,5,7,8,9,10].fast(0.4))
+                    .color(() => gyro.gamma*1.5, ()=>a.fft[0]*4)
+                    .colorama(0.2)
+                    // .rotate(0.009,()=>Math.sin(time)* -0.0001)
+                    .rotate(0.009,() => gyro.beta*1.5)
+                    // .modulateRotate(o0,()=>Math.sin(time) * 0.003)
+                    .modulateRotate(o0,() => gyro.alpha*1.5)
+                    .modulate(o0, 0.9)
+                    .scale(0.5)
+                    .out(o1)
+
+                src(o0).diff(o1).out(o3)
+                src(o0).modulate(o1).out(o2)
+
+                a.show()
+                a.setSmooth(0.1)
+
+                render(o3)
+
+        }
+
+        // array of available sketches
+        const mySketches = [sketch1, sketch2, sketch3]
+        let currentSketch = 0
+        mySketches[0]()
+
+        // listen to events
+        window.addEventListener('pointerdown', () => {
+            currentSketch++
+            if(currentSketch >= mySketches.length) currentSketch = 0
+            mySketches[currentSketch]()
+        })
+
+        gyro.requestPermissions(document.getElementById('gyro-button'))
+        gyro.show()
     </script>
+    <button id="gyro-button">activate gyroscope</button>
 </body>
 
 </html>
