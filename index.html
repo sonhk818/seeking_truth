@@ -62,9 +62,9 @@
                     .scrollY(-0.001)
                     .modulate(src(s0).hue(() => gyro.alpha/2), 0.002)
                     .layer(src(s0)
-                        .mask(shape(100, 0.2, 0.001))
-                        .scrollX(() => gyro.gamma*1.5)
-                        .scrollY(() => gyro.beta*1.5)
+                        .mask(shape(50, 0.1, 0.001))
+                        .scrollX(() => gyro.gamma/2)
+                        .scrollY(() => gyro.beta/2)
                         )
                     .out(o0)
                         }
